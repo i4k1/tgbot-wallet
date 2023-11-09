@@ -1,0 +1,15 @@
+{
+  "name": "i4k_wallet",
+  "version": "0.0.1",
+  "description": "Telegram Bot Cryptowallet",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/i4k1/tgbot-wallet"
+  },
+  "author": "i4k1",
+  "license": "CC0-1.0"
+}
