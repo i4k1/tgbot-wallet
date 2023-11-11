@@ -67,9 +67,14 @@ bot.command ("senderc20", async (ctx) => {
             let get_balance_erc20 = await funcs.getBalanceERC20("amount");
 
             if ( get_balance_erc20 >= get_amount ) {
-                let get_erc20_symbol = await funcs.getBalanceERC20("symbol");
+                let get_chain_id = await funcs.getBalanceETH("id");
                 let send_erc20 = await funcs.sendERC20(get_address, get_amount);
-                ctx.replyWithHTML(`Отправлено: ${get_amount} <i><b>${get_erc20_symbol}</b></i>, по адресу: <code>${get_address}</code>.\nХэш транзакции: <code>${send_erc20}</code>.`);
+
+                if ( get_chain_id === 97n ) {
+                    ctx.replyWithHTML(`https://testnet.bscscan.com/tx/${send_erc20}`);
+                } else {
+                    ctx.replyWithHTML(`<code>${send_erc20}</code>`);
+                }
             } else {
                 ctx.replyWithHTML("Недостаточно средств");
             }
