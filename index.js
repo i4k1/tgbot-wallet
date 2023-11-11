@@ -43,9 +43,9 @@ bot.command ("sendeth", async (ctx) => {
                 let get_chain_id = await funcs.getBalanceETH("id");
 
                 if ( get_chain_id === 97n ) {
-                    ctx.replyWithHTML(`Отправлено: ${get_amount} <i><b>ETH</b></i>.\nПо адресу: <code>${get_address}</code>.\n\nhttps://testnet.bscscan.com/tx/${send_eth}`);
+                    ctx.replyWithHTML(`https://testnet.bscscan.com/tx/${send_eth}`);
                 } else {
-                    ctx.replyWithHTML(`Отправлено: ${get_amount} <i><b>ETH</b></i>.\nПо адресу: <code>${get_address}</code>.\nХэш транзакции: <code>${send_eth}</code>.`);
+                    ctx.replyWithHTML(`<code>${send_eth}</code>`);
                 }
             } else {
                 ctx.reply("Недостаточно средств");
