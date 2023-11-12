@@ -1,6 +1,6 @@
 {
-    "nodeUrl": "",
     "privateKey": "",
-    "ERC20": "",
-    "tgbotToken": ""
+    "tgbotToken": "",
+    "nodeUrl": "",
+    "ERC20tokens": [ "" ]
 }
