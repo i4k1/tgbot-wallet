@@ -13,9 +13,6 @@ const abi = [
     "function name() view returns (string)"
 ];
 
-const contractp = new Contract(walletJSON.ERC20, abi, provider); // ERC20 token contract address
-const contractw = new Contract(walletJSON.ERC20, abi, wallet);
-
 async function getBalanceETH(value) {
     if ( value === "amount" ) {
         const balance = await provider.getBalance(wallet.address);
@@ -34,16 +31,17 @@ async function getBalanceETH(value) {
     }
 }
 
-async function getBalanceERC20(value) {
+async function getBalanceERC20(token, value) {
+    const contract = new Contract(token, abi, provider); // ERC20 token contract address
     if ( value === "amount" ) {
-        const balance = await contractp.balanceOf(wallet.address);
+        const balance = await contract.balanceOf(wallet.address);
         const balanceInEth = ethers.formatEther(balance); // wei to ether
         return balanceInEth;
     } else if ( value === "name" ) {
-        const erc20_name = await contractp.name();
+        const erc20_name = await contract.name();
         return erc20_name;
     } else if ( value === "symbol" ) {
-        const erc20_symbol = await contractp.symbol();
+        const erc20_symbol = await contract.symbol();
         return erc20_symbol;
     } else {
         return "invalid function parameter";
@@ -57,9 +55,10 @@ async function sendETH(addressTo, amount) {
     return tx.hash;
 }
 
-async function sendERC20(addressTo, amountToken) {
+async function sendERC20(token, addressTo, amountToken) {
+    const contract = new Contract(token, abi, wallet);
     const amount = parseUnits(amountToken, 18); // number of tokens
-    const tx = await contractw.transfer(addressTo, amount); // to whom to transfer
+    const tx = await contract.transfer(addressTo, amount); // to whom to transfer
     const receipt = await tx.wait();
     console.log(tx.hash, receipt);
     return tx.hash;
