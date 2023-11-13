@@ -3,7 +3,7 @@
     "tgbotToken": "",
     "tgUserId": 0,
     "networks": {
-        "bsct": {
+        "network": {
             "nodeUrl": "",
             "ERC20tokens": [ "" ]
         }
