@@ -1,6 +1,11 @@
 {
     "privateKey": "",
     "tgbotToken": "",
-    "nodeUrl": "",
-    "ERC20tokens": [ "" ]
+    "tgUserId": 0,
+    "networks": {
+        "bsct": {
+            "nodeUrl": "",
+            "ERC20tokens": [ "" ]
+        }
+    }
 }
