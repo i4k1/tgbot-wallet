@@ -4,11 +4,11 @@ const { Telegraf, Markup } = require("telegraf");
 const ethPrice = require("eth-price");
 const funcs = require("./funcs.js");
 const walletJSON = require("./wallet.json");
+const { wordlists, getAddress } = require("ethers");
+// const { keyboard } = require("telegraf/typings/markup.js");
 
 const tgbotToken = walletJSON.tgbotToken; // telegram bot api token
 const bot = new Telegraf(tgbotToken);
-
-var cool_command = "";
 
 bot.start(async (ctx) => {
     if ( ctx.message.from.id === walletJSON.tgUserId ) {
@@ -20,17 +20,17 @@ bot.start(async (ctx) => {
 
 bot.command ("ethbalance", async (ctx) => {
     if ( ctx.message.from.id === walletJSON.tgUserId ) {
-        const networkEthNames = Object.keys(walletJSON.networks);
-        ctx.replyWithHTML("Выберите сеть:", Markup.keyboard(networkEthNames).oneTime().resize());
+        const network_names = Object.keys(walletJSON.networks);
+        let keyboard_networks = Markup.inlineKeyboard( network_names.map( (word) => Markup.button.callback(word, word)) );
+        ctx.replyWithHTML("Выберите сеть", keyboard_networks);
 
-        const get_eth_network_name = ctx.message.text;
-        if ( networkEthNames.includes(get_eth_network_name) ) {
-            let get_balance_eth = await funcs.getBalanceETH(walletJSON.networks[get_eth_network_name].nodeUrl, "amount");
-            let get_network_name = await funcs.getBalanceETH(walletJSON.networks[get_eth_network_name].nodeUrl, "name");
-            ctx.replyWithHTML(`${get_balance_eth} <i><b>${get_network_name}</b></i>`);
-        } else {
-            ctx.reply("err");
-        }
+        network_names.forEach(async (word) => {
+            bot.action(word, async (ctx) => {
+                let get_balance_eth = await funcs.getBalanceETH(walletJSON.networks[word].nodeUrl, "amount");
+                let get_network_name = await funcs.getBalanceETH(walletJSON.networks[word].nodeUrl, "name");
+                ctx.replyWithHTML(`${get_balance_eth} <i><b>${get_network_name}</b></i>`);
+            });
+        });
     } else {
         ctx.replyWithHTML("<s><u><i><b>ACCESS DENIED</b></i></u></s>");
     }
@@ -38,38 +38,40 @@ bot.command ("ethbalance", async (ctx) => {
 
 bot.command ("erc20balance", async (ctx) => {
     if ( ctx.message.from.id === walletJSON.tgUserId ) {
-        const networkERC20Names = Object.keys(walletJSON.networks);
-        ctx.replyWithHTML("Выберите сеть:", Markup.keyboard(networkERC20Names).oneTime().resize());
+        const network_names = Object.keys(walletJSON.networks);
+        let keyboard_networks = Markup.inlineKeyboard( network_names.map( (word) => Markup.button.callback(word, word)) );
+        ctx.replyWithHTML("Выберите сеть", keyboard_networks);
 
-            const get_erc20_network_name = ctx.message.text;
-            if ( networkERC20Names.includes(get_erc20_network_name) ) {
-                let get_chain_id = await funcs.getBalanceETH(walletJSON.networks[get_erc20_network_name].nodeUrl, "id");
+        network_names.forEach(async (word) => {
+            bot.action(word, async (ctx) => {
+                let get_chain_id = await funcs.getBalanceETH(walletJSON.networks[word].nodeUrl, "id");
+                let get_networks_node_url = walletJSON.networks[word].nodeUrl;
+                let get_networks_erc20tokens = walletJSON.networks[word].ERC20tokens[i].toString();
+
                 if ( get_chain_id === 97n ) {
-                    for ( let i = 0; i < walletJSON.networks[get_erc20_network_name].ERC20tokens.length; i++ ) {
-                        let get_erc20_amount = await funcs.getBalanceERC20(walletJSON.networks[get_erc20_network_name].nodeUrl, walletJSON.networks[get_erc20_network_name].ERC20tokens[i].toString(), "amount");
-                        let get_erc20_symbol = await funcs.getBalanceERC20(walletJSON.networks[get_erc20_network_name].nodeUrl, walletJSON.networks[get_erc20_network_name].ERC20tokens[i].toString(), "symbol");
-                        let get_erc20_name = await funcs.getBalanceERC20(walletJSON.networks[get_erc20_network_name].nodeUrl, walletJSON.networks[get_erc20_network_name].ERC20tokens[i].toString(), "name");
-                        ctx.replyWithHTML(`${get_erc20_amount} <i><b>${get_erc20_symbol}</b></i> (<i>${get_erc20_name}</i>)\n<code>${walletJSON.networks[get_erc20_network_name].ERC20tokens[i]}</code>\nhttps://testnet.bscscan.com/address/${walletJSON.networks[get_erc20_network_name].ERC20tokens[i]}`, { disable_web_page_preview: true });
+                    for ( let i = 0; i < walletJSON.networks[word].ERC20tokens.length; i++ ) {
+                        let get_erc20_amount = await funcs.getBalanceERC20(get_networks_node_url, get_networks_erc20tokens, "amount");
+                        let get_erc20_symbol = await funcs.getBalanceERC20(get_networks_node_url, get_networks_erc20tokens, "symbol");
+                        let get_erc20_name = await funcs.getBalanceERC20(get_networks_node_url, get_networks_erc20tokens, "name");
+                        ctx.replyWithHTML(`${get_erc20_amount} <i><b>${get_erc20_symbol}</b></i> (<i>${get_erc20_name}</i>)\n<code>${get_networks_erc20tokens}</code>\nhttps://testnet.bscscan.com/address/${get_networks_erc20tokens}`, { disable_web_page_preview: true });
                     }
                 } else if ( get_chain_id === 80001n ) {
-                    for ( let i = 0; i < walletJSON.networks[get_erc20_network_name].ERC20tokens.length; i++ ) {
-                        let get_erc20_amount = await funcs.getBalanceERC20(walletJSON.networks[get_erc20_network_name].nodeUrl, walletJSON.networks[get_erc20_network_name].ERC20tokens[i].toString(), "amount");
-                        let get_erc20_symbol = await funcs.getBalanceERC20(walletJSON.networks[get_erc20_network_name].nodeUrl, walletJSON.networks[get_erc20_network_name].ERC20tokens[i].toString(), "symbol");
-                        let get_erc20_name = await funcs.getBalanceERC20(walletJSON.networks[get_erc20_network_name].nodeUrl, walletJSON.networks[get_erc20_network_name].ERC20tokens[i].toString(), "name");
-                        ctx.replyWithHTML(`${get_erc20_amount} <i><b>${get_erc20_symbol}</b></i> (<i>${get_erc20_name}</i>)\n<code>${walletJSON.networks[get_erc20_network_name].ERC20tokens[i]}</code>\nhttps://mumbai.polygonscan.com/address/${walletJSON.networks[get_erc20_network_name].ERC20tokens[i]}`, { disable_web_page_preview: true });
+                    for ( let i = 0; i < walletJSON.networks[word].ERC20tokens.length; i++ ) {
+                        let get_erc20_amount = await funcs.getBalanceERC20(get_networks_node_url, get_networks_erc20tokens, "amount");
+                        let get_erc20_symbol = await funcs.getBalanceERC20(get_networks_node_url, get_networks_erc20tokens, "symbol");
+                        let get_erc20_name = await funcs.getBalanceERC20(get_networks_node_url, get_networks_erc20tokens, "name");
+                        ctx.replyWithHTML(`${get_erc20_amount} <i><b>${get_erc20_symbol}</b></i> (<i>${get_erc20_name}</i>)\n<code>${get_networks_erc20tokens}</code>\nhttps://mumbai.polygonscan.com/address/${get_networks_erc20tokens}`, { disable_web_page_preview: true });
                     }
                 } else {
-                    for ( let i = 0; i < walletJSON.networks[get_erc20_network_name].ERC20tokens.length; i++ ) {
-                        let get_erc20_amount = await funcs.getBalanceERC20(walletJSON.networks[get_erc20_network_name].nodeUrl, walletJSON.networks[get_erc20_network_name].ERC20tokens[i].toString(), "amount");
-                        let get_erc20_symbol = await funcs.getBalanceERC20(walletJSON.networks[get_erc20_network_name].nodeUrl, walletJSON.networks[get_erc20_network_name].ERC20tokens[i].toString(), "symbol");
-                        let get_erc20_name = await funcs.getBalanceERC20(walletJSON.networks[get_erc20_network_name].nodeUrl, walletJSON.networks[get_erc20_network_name].ERC20tokens[i].toString(), "name");
-                        ctx.replyWithHTML(`${get_erc20_amount} <i><b>${get_erc20_symbol}</b></i> (<i>${get_erc20_name}</i>)\n<code>${walletJSON.networks[get_erc20_network_name].ERC20tokens[i]}</code>`);
+                    for ( let i = 0; i < walletJSON.networks[word].ERC20tokens.length; i++ ) {
+                        let get_erc20_amount = await funcs.getBalanceERC20(get_networks_node_url, get_networks_erc20tokens, "amount");
+                        let get_erc20_symbol = await funcs.getBalanceERC20(get_networks_node_url, get_networks_erc20tokens, "symbol");
+                        let get_erc20_name = await funcs.getBalanceERC20(get_networks_node_url, get_networks_erc20tokens, "name");
+                        ctx.replyWithHTML(`${get_erc20_amount} <i><b>${get_erc20_symbol}</b></i> (<i>${get_erc20_name}</i>)\n<code>${get_networks_erc20tokens}</code>`);
                     }
                 }
-            } else {
-                ctx.reply("err");
-            }
-
+            });
+        });
     } else {
         ctx.replyWithHTML("<s><u><i><b>ACCESS DENIED</b></i></u></s>");
     }
@@ -150,7 +152,11 @@ bot.command ("ethprice", async (ctx) => {
 //     }
 // });
 
-bot.launch();
+bot.command("getaddress", async (ctx) => {
+    const secret_phrase = "boba biba beba baba";
+    const path1 = "m/44'/60'/0'/0/0"; // Первый адрес
 
-process.once('SIGINT', () => bot.stop('SIGINT'))
-process.once('SIGTERM', () => bot.stop('SIGTERM'))
+    console.log(`adress 1: ${getAddress(secret_phrase, path1)}`);
+});
+
+bot.launch();
