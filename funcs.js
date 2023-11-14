@@ -73,4 +73,9 @@ async function sendERC20(node_url, token, addressTo, amountToken) {
     return tx.hash;
 }
 
-module.exports = { getBalanceETH, getBalanceERC20, sendETH, sendERC20 };
+async function getAddress( mnemonic, path ) {
+    const wallet = ethers.wallet.fromMnemonic(mnemonic, path);
+    return wallet.address;
+}
+
+module.exports = { getBalanceETH, getBalanceERC20, sendETH, sendERC20, getAddress };
