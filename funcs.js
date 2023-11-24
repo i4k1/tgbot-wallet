@@ -1,11 +1,9 @@
-// 14-11-2023 i4k
+// 24-11-2023 i4k
 
 const ethers = require("ethers");
 const { parseUnits, parseEther, Contract } = require("ethers");
 const walletJSON = require("./wallet.json");
 
-// const provider = new ethers.JsonRpcProvider(walletJSON.nodeUrl); // blockchain RPC node link
-// const wallet = new ethers.Wallet(walletJSON.privateKey, provider); // wallet private key
 const abi = [
     "function transfer(address to, uint amount)",
     "function balanceOf(address) public view returns (uint)",
@@ -73,9 +71,4 @@ async function sendERC20(node_url, token, addressTo, amountToken) {
     return tx.hash;
 }
 
-async function getAddress( mnemonic, path ) {
-    const wallet = ethers.wallet.fromMnemonic(mnemonic, path);
-    return wallet.address;
-}
-
-module.exports = { getBalanceETH, getBalanceERC20, sendETH, sendERC20, getAddress };
+module.exports = { getBalanceETH, getBalanceERC20, sendETH, sendERC20 };
