@@ -13,7 +13,8 @@ const abi = [
 
 async function getBalanceETH(node_url, value) {
     const provider = new ethers.JsonRpcProvider(node_url); // blockchain RPC node link
-    const wallet = new ethers.Wallet(walletJSON.privateKey, provider); // wallet private key
+    const walletMnemonic = ethers.Wallet.fromPhrase(walletJSON.mnemonicPhrase, provider); // wallet mnemonic phrase
+    const wallet = new ethers.Wallet(walletMnemonic.privateKey, provider); // wallet private key
 
     if ( value === "amount" ) {
         const balance = await provider.getBalance(wallet.address);
@@ -34,7 +35,8 @@ async function getBalanceETH(node_url, value) {
 
 async function getBalanceERC20(node_url, token, value) {
     const provider = new ethers.JsonRpcProvider(node_url); // blockchain RPC node link
-    const wallet = new ethers.Wallet(walletJSON.privateKey, provider); // wallet private key
+    const walletMnemonic = ethers.Wallet.fromPhrase(walletJSON.mnemonicPhrase, provider); // wallet mnemonic phrase
+    const wallet = new ethers.Wallet(walletMnemonic.privateKey, provider); // wallet private key
     const contract = new Contract(token, abi, provider); // ERC20 token contract address
     if ( value === "amount" ) {
         const balance = await contract.balanceOf(wallet.address);
@@ -53,7 +55,8 @@ async function getBalanceERC20(node_url, token, value) {
 
 async function sendETH(node_url, addressTo, amount) {
     const provider = new ethers.JsonRpcProvider(node_url); // blockchain RPC node link
-    const wallet = new ethers.Wallet(walletJSON.privateKey, provider); // wallet private key
+    const walletMnemonic = ethers.Wallet.fromPhrase(walletJSON.mnemonicPhrase, provider); // wallet mnemonic phrase
+    const wallet = new ethers.Wallet(walletMnemonic.privateKey, provider); // wallet private key
     const tx = await wallet.sendTransaction({ to: addressTo, value: parseEther(amount) });
     const receipt = await tx.wait();
     console.log(tx.hash, receipt);
@@ -62,7 +65,8 @@ async function sendETH(node_url, addressTo, amount) {
 
 async function sendERC20(node_url, token, addressTo, amountToken) {
     const provider = new ethers.JsonRpcProvider(node_url); // blockchain RPC node link
-    const wallet = new ethers.Wallet(walletJSON.privateKey, provider); // wallet private key
+    const walletMnemonic = ethers.Wallet.fromPhrase(walletJSON.mnemonicPhrase, provider); // wallet mnemonic phrase
+    const wallet = new ethers.Wallet(walletMnemonic.privateKey, provider); // wallet private key
     const contract = new Contract(token, abi, wallet);
     const amount = parseUnits(amountToken, 18); // number of tokens
     const tx = await contract.transfer(addressTo, amount); // to whom to transfer
