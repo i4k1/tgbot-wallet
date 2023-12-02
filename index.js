@@ -9,6 +9,10 @@ const tgbotToken = walletJSON.tgbotToken; // telegram bot api token
 const bot = new Telegraf(tgbotToken);
 
 bot.start(async (ctx) => {
+    const date = new Date(ctx.message.date * 1000);
+    const fulldate = `${date.getFullYear()}-${date.getDate()}-${date.getMonth()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    console.log(`\x1b[1m\x1b[37m${ctx.message.from.first_name} ${ctx.message.from.last_name}\x1b[0m • \x1b[1m\x1b[32m@${ctx.message.from.username}\x1b[0m • ${ctx.message.from.id} • ${ctx.message.from.is_premium} • ${fulldate} • \x1b[1m\x1b[33m${ctx.message.text}\x1b[0m`);
+    
     if ( ctx.message.from.id === walletJSON.tgUserId ) {
         ctx.replyWithHTML(`Добро пожаловать, <i>мой господин</i>, <b><i>${ctx.message.from.first_name}</i></b>!`);
     } else {
@@ -17,6 +21,10 @@ bot.start(async (ctx) => {
 });
 
 bot.command ("ethbalance", async (ctx) => {
+    const date = new Date(ctx.message.date * 1000);
+    const fulldate = `${date.getFullYear()}-${date.getDate()}-${date.getMonth()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    console.log(`\x1b[1m\x1b[37m${ctx.message.from.first_name} ${ctx.message.from.last_name}\x1b[0m • \x1b[1m\x1b[32m@${ctx.message.from.username}\x1b[0m • ${ctx.message.from.id} • ${ctx.message.from.is_premium} • ${fulldate} • \x1b[1m\x1b[33m${ctx.message.text}\x1b[0m`);
+    
     if ( ctx.message.from.id === walletJSON.tgUserId ) {
         const network_names = Object.keys(walletJSON.networks);
         let keyboard_networks = { parse_mode: "HTML", ...Markup.inlineKeyboard([ network_names.map( (word) => Markup.button.callback(word, word)) ]) };
@@ -35,6 +43,10 @@ bot.command ("ethbalance", async (ctx) => {
 });
 
 bot.command ("erc20balance", async (ctx) => {
+    const date = new Date(ctx.message.date * 1000);
+    const fulldate = `${date.getFullYear()}-${date.getDate()}-${date.getMonth()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    console.log(`\x1b[1m\x1b[37m${ctx.message.from.first_name} ${ctx.message.from.last_name}\x1b[0m • \x1b[1m\x1b[32m@${ctx.message.from.username}\x1b[0m • ${ctx.message.from.id} • ${ctx.message.from.is_premium} • ${fulldate} • \x1b[1m\x1b[33m${ctx.message.text}\x1b[0m`);
+    
     if ( ctx.message.from.id === walletJSON.tgUserId ) {
         const network_names = Object.keys(walletJSON.networks);
         let keyboard_networks = Markup.inlineKeyboard( network_names.map( (word) => Markup.button.callback(word, `${word}_erc20`)) );
@@ -78,6 +90,10 @@ bot.command ("erc20balance", async (ctx) => {
 });
 
 bot.command ("ethprice", async (ctx) => {
+    const date = new Date(ctx.message.date * 1000);
+    const fulldate = `${date.getFullYear()}-${date.getDate()}-${date.getMonth()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    console.log(`\x1b[1m\x1b[37m${ctx.message.from.first_name} ${ctx.message.from.last_name}\x1b[0m • \x1b[1m\x1b[32m@${ctx.message.from.username}\x1b[0m • ${ctx.message.from.id} • ${ctx.message.from.is_premium} • ${fulldate} • \x1b[1m\x1b[33m${ctx.message.text}\x1b[0m`);
+    
     let get_eth_price = await ethPrice("usd,rub");
     ctx.replyWithHTML(`<i><b>◊</b></i>1 • ${get_eth_price[0].replace("USD: ", "<i><b>$</b></i>")} • ${get_eth_price[1].replace("RUB: ", "<i><b>₽</b></i>")}`);
 });
@@ -151,5 +167,12 @@ bot.command ("ethprice", async (ctx) => {
 //         ctx.replyWithHTML("<s><u><i><b>ACCESS DENIED</b></i></u></s>");
 //     }
 // });
+
+bot.on("text", async (ctx) => {
+    const date = new Date(ctx.message.date * 1000);
+    const fulldate = `${date.getFullYear()}-${date.getDate()}-${date.getMonth()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+
+    console.log(`\x1b[1m\x1b[37m${ctx.message.from.first_name} ${ctx.message.from.last_name}\x1b[0m • \x1b[1m\x1b[32m@${ctx.message.from.username}\x1b[0m • ${ctx.message.from.id} • ${ctx.message.from.is_premium} • ${fulldate} • \x1b[1m\x1b[33m${ctx.message.text}\x1b[0m`);
+});
 
 bot.launch();
